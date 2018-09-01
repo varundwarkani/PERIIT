@@ -41,7 +41,7 @@ public class StudentDisplay extends AppCompatActivity {
     String dept,year,section;
     private RequestQueue requestQueue;
     ProgressBar studentdisplayprogress;
-    Button btfeedback;
+    Button btfeedback,btUpload;
 
     private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=";
     private static final String ATTACH_API = "&authkey=235086AuBUHp6g5b8a8abc&message=";
@@ -54,6 +54,14 @@ public class StudentDisplay extends AppCompatActivity {
         setContentView(R.layout.activity_student_display);
 
         btfeedback = findViewById(R.id.btfeedback);
+
+        btUpload = findViewById(R.id.btUpload);
+        btUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         studentdisplayprogress = findViewById(R.id.studentdisplayprogress);
         studentdisplayprogress.setVisibility(View.VISIBLE);

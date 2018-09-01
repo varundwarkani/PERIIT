@@ -29,6 +29,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:inputType="number"
+        android:maxLength="2"
         android:background="#fff"
         android:padding="15dp"
         />
@@ -39,6 +40,7 @@
         android:layout_height="wrap_content"
         android:hint="Enter Total Backlogs"
         android:maxLines="1"
+        android:maxLength="2"
         android:inputType="number"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
