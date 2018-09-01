@@ -149,5 +149,16 @@
         android:layout_alignParentBottom="true"
         android:text="LOGOUT"/>
 
+    <ProgressBar
+        android:id="@+id/studentdisplayprogress"
+        android:theme="@style/ProgressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="127dp"
+        android:layout_weight="1" />
+
 </RelativeLayout>
 

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -55,18 +56,18 @@ public class MainActivity extends AppCompatActivity {
     public static final String CATPREF = "catpref";
     SharedPreferences categoriesPref;
     SharedPreferences.Editor editor;
-    private RequestQueue requestQueue;
-
-    private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=8667702842&authkey=235086AuBUHp6g5b8a8abc&message=Youneed";
-
     String email,password,section;
     TextView etsignuppasst,etsignupmailt;
     Button btsignupt,btlogint;
+    ProgressBar mainprogress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainprogress = findViewById(R.id.mainprogress);
+        mainprogress.setVisibility(View.GONE);
 
         rlstudent = findViewById(R.id.rlstudent);
         rlteacher = findViewById(R.id.rlteacher);
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!TextUtils.isEmpty(email)&&!TextUtils.isEmpty(password))
                 {
+                    mainprogress.setVisibility(View.VISIBLE);
                     Task<AuthResult> authResultTask = mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -102,12 +104,14 @@ public class MainActivity extends AppCompatActivity {
                                 editor.putString("type","teacher");
                                 editor.commit();
 
+                                mainprogress.setVisibility(View.GONE);
                                 Intent intent = new Intent (MainActivity.this, TeacherDetails.class);
                                 startActivity(intent);
                                 finish();
                             }
                             else
                             {
+                                mainprogress.setVisibility(View.GONE);
                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                 Toast.makeText(MainActivity.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -117,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    mainprogress.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -135,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         btlogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mainprogress.setVisibility(View.VISIBLE);
                 hideKeyboard();
                 mail = etsignupmail.getText().toString();
                 pass = etsignuppass.getText().toString();
@@ -154,12 +160,14 @@ public class MainActivity extends AppCompatActivity {
                                 editor.putString("type","student");
                                 editor.commit();
 
+                                mainprogress.setVisibility(View.GONE);
                                 Intent intent = new Intent (MainActivity.this, StudentDisplay.class);
                                 startActivity(intent);
                                 finish();
                             }
                             else
                             {
+                                mainprogress.setVisibility(View.GONE);
                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                 Toast.makeText(MainActivity.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -169,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    mainprogress.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -193,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (isNetworkAvailable())
                 {
+                    mainprogress.setVisibility(View.VISIBLE);
                     hideKeyboard();
                     mail = etsignupmail.getText().toString();
                     pass = etsignuppass.getText().toString();
@@ -246,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             if (name.equals("") || phone.equals("") || dept.equals("") || year.equals("") || phone.equals(""))
                                             {
+                                                mainprogress.setVisibility(View.GONE);
                                                 Toast.makeText(MainActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
                                             }
                                             else
@@ -260,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 else
                                 {
+                                    mainprogress.setVisibility(View.GONE);
                                     FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                     Toast.makeText(MainActivity.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
@@ -269,11 +281,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        mainprogress.setVisibility(View.GONE);
                         Toast.makeText(MainActivity.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else
                 {
+                    mainprogress.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -288,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (isNetworkAvailable())
                 {
+                    mainprogress.setVisibility(View.VISIBLE);
                     hideKeyboard();
                     email = etsignupmailt.getText().toString();
                     password = etsignuppasst.getText().toString();
@@ -342,6 +357,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             if (name.equals("") || phone.equals("") || dept.equals("") || phone.equals(""))
                                             {
+                                                mainprogress.setVisibility(View.GONE);
                                                 Toast.makeText(MainActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
                                             }
                                             else
@@ -356,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 else
                                 {
+                                    mainprogress.setVisibility(View.GONE);
                                     FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                     Toast.makeText(MainActivity.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
@@ -365,11 +382,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        mainprogress.setVisibility(View.GONE);
                         Toast.makeText(MainActivity.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else
                 {
+                    mainprogress.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -432,6 +451,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("type","student");
         editor.commit();
 
+        mainprogress.setVisibility(View.GONE);
         Intent intent = new Intent (MainActivity.this, StudentDisplay.class);
         startActivity(intent);
         finish();
@@ -470,6 +490,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("type","teacher");
         editor.commit();
 
+        mainprogress.setVisibility(View.GONE);
         Intent intent = new Intent (MainActivity.this, TeacherDetails.class);
         startActivity(intent);
         finish();

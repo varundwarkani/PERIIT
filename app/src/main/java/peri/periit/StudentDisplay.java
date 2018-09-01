@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +37,10 @@ public class StudentDisplay extends AppCompatActivity {
     FirebaseAuth.AuthStateListener mAuthListener;
     String uid;
     String subjects,backlogs,fees,status;
-
     Button btlogout,btpaid;
-
     String dept,year,section;
-
     private RequestQueue requestQueue;
+    ProgressBar studentdisplayprogress;
 
     private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=";
     private static final String ATTACH_API = "&authkey=235086AuBUHp6g5b8a8abc&message=";
@@ -53,6 +52,8 @@ public class StudentDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_display);
 
+        studentdisplayprogress = findViewById(R.id.studentdisplayprogress);
+        studentdisplayprogress.setVisibility(View.VISIBLE);
         tvstatus = findViewById(R.id.tvstatus);
         tvsubjects = findViewById(R.id.tvsubjects);
         tvbacklogs = findViewById(R.id.tvbacklogs);
@@ -149,7 +150,9 @@ public class StudentDisplay extends AppCompatActivity {
                             double totalfees = (s+b)*fe;
 
                             String tot = String.valueOf(totalfees);
-                            tvfees.setText("Total Fees: "+ totalfees);
+                            tvfees.setText("Total Fees: "+ tot);
+
+                            studentdisplayprogress.setVisibility(View.GONE);
                         }
 
                         @Override

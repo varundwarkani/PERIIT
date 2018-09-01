@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,26 +45,23 @@ public class StudentView extends AppCompatActivity {
     String backlogs,subjects,status,fees,name,rollno;
     Button btchange;
     String exams,backlog;
-
     String dept,year,section;
-
     AlertDialog.Builder builder;
     AlertDialog dialog;
-
     String message,phoneno;
-
     TextView tvname,tvrollno,tvfees,tvstatus;
     private RequestQueue requestQueue;
-
     private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=";
     private static final String ATTACH_API = "&authkey=235086AuBUHp6g5b8a8abc&message=";
-
+    ProgressBar studentviewprogress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_view);
 
+        studentviewprogress = findViewById(R.id.studentviewprogress);
+        studentviewprogress.setVisibility(View.VISIBLE);
         btnotify = findViewById(R.id.btnotify);
 
         btchange = findViewById(R.id.btchange);
@@ -108,7 +106,6 @@ public class StudentView extends AppCompatActivity {
                 if (user!= null) {
                     SharedPreferences catPref = getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
                     studentuid = catPref.getString("studentuid","none");
-
                     DatabaseReference mRefregggg = FirebaseDatabase.getInstance().getReference();
                     mRefregggg.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -133,13 +130,23 @@ public class StudentView extends AppCompatActivity {
                                 btstatus.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        final DatabaseReference databaseReference = database.getReference();
-                                        databaseReference.child("student/"+studentuid+"/status").setValue("2");
-                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("2");
-                                        message = "Your%20payment%20status%20has%20been%20changed%20to%20pending%20state";
-                                        requestQueue = Volley.newRequestQueue(getApplicationContext());
-                                        sendsms();
+
+                                        new AlertDialog.Builder(StudentView.this)
+                                                .setMessage("Are you sure you want to change to pending?")
+                                                .setCancelable(false)
+                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                                        final DatabaseReference databaseReference = database.getReference();
+                                                        databaseReference.child("student/"+studentuid+"/status").setValue("2");
+                                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("2");
+                                                        message = "Your%20payment%20status%20has%20been%20changed%20to%20pending%20state";
+                                                        requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                                        sendsms();
+                                                    }
+                                                })
+                                                .setNegativeButton("No", null)
+                                                .show();
                                     }
                                 });
                                 btnotify.setOnClickListener(new View.OnClickListener() {
@@ -157,14 +164,23 @@ public class StudentView extends AppCompatActivity {
                                 btstatus.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        final DatabaseReference databaseReference = database.getReference();
-                                        databaseReference.child("student/"+studentuid+"/status").setValue("0");
-                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("0");
 
-                                        message = "Your%20payment%20status%20has%20been%20changed%20to%20rejected";
-                                        requestQueue = Volley.newRequestQueue(getApplicationContext());
-                                        sendsms();
+                                        new AlertDialog.Builder(StudentView.this)
+                                                .setMessage("Are you sure you want to change to reject?")
+                                                .setCancelable(false)
+                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                                        final DatabaseReference databaseReference = database.getReference();
+                                                        databaseReference.child("student/"+studentuid+"/status").setValue("0");
+                                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("0");
+                                                        message = "Your%20payment%20status%20has%20been%20changed%20to%20rejected";
+                                                        requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                                        sendsms();
+                                                    }
+                                                })
+                                                .setNegativeButton("No", null)
+                                                .show();
                                     }
                                 });
                                 btnotify.setOnClickListener(new View.OnClickListener() {
@@ -182,13 +198,23 @@ public class StudentView extends AppCompatActivity {
                                 btstatus.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        final DatabaseReference databaseReference = database.getReference();
-                                        databaseReference.child("student/"+studentuid+"/status").setValue("1");
-                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("1");
-                                        message = "Your%20payment%20status%20has%20been%20approved";
-                                        requestQueue = Volley.newRequestQueue(getApplicationContext());
-                                        sendsms();
+
+                                        new AlertDialog.Builder(StudentView.this)
+                                                .setMessage("Are you sure you want to change to approve?")
+                                                .setCancelable(false)
+                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                                        final DatabaseReference databaseReference = database.getReference();
+                                                        databaseReference.child("student/"+studentuid+"/status").setValue("1");
+                                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("1");
+                                                        message = "Your%20payment%20status%20has%20been%20approved";
+                                                        requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                                        sendsms();
+                                                    }
+                                                })
+                                                .setNegativeButton("No", null)
+                                                .show();
                                     }
                                 });
                                 btnotify.setOnClickListener(new View.OnClickListener() {
@@ -209,7 +235,7 @@ public class StudentView extends AppCompatActivity {
                             double totalfees = (s+b)*fe;
 
                             String tot = String.valueOf(totalfees);
-                            tvfees.setText("Total Fees: "+ totalfees);
+                            tvfees.setText("Total Fees: "+ tot);
 
 
 
@@ -267,6 +293,8 @@ public class StudentView extends AppCompatActivity {
                                     dialog.show();
                                 }
                             });
+
+                            studentviewprogress.setVisibility(View.GONE);
                         }
 
                         @Override

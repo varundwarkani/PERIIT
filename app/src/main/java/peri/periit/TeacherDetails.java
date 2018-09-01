@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,8 +33,8 @@ public class TeacherDetails extends AppCompatActivity {
     ArrayList<String> name = new ArrayList<>();
     TeacherAdapter teacherAdapter;
     Button btlogout;
-
     String dept,year,section,teacheruid;
+    ProgressBar teacherdetailsprogress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,9 @@ public class TeacherDetails extends AppCompatActivity {
         rvteacher.setLayoutManager(new LinearLayoutManager(TeacherDetails.this));
         teacherAdapter = new TeacherAdapter(rollno,uid,status,name);
         rvteacher.setAdapter(teacherAdapter);
+        teacherdetailsprogress = findViewById(R.id.teacherdisplayprogress);
+        teacherdetailsprogress.setVisibility(View.VISIBLE);
+
 
         btlogout = findViewById(R.id.btlogout);
         btlogout.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +97,8 @@ public class TeacherDetails extends AppCompatActivity {
                                     status.clear();
                                     teacherAdapter = new TeacherAdapter(rollno,uid,status,name);
                                     rvteacher.setAdapter(teacherAdapter);
-                                    for (final DataSnapshot postSnapshots: dataSnapshot.getChildren()) {
+                                    for (final DataSnapshot postSnapshots: dataSnapshot.getChildren())
+                                    {
 
                                         String rollno1 = postSnapshots.child("rollno").getValue().toString();
                                         String name1 = postSnapshots.child("name").getValue().toString();
@@ -106,6 +111,8 @@ public class TeacherDetails extends AppCompatActivity {
                                         teacherAdapter = new TeacherAdapter(rollno,uid,status,name);
                                         rvteacher.setAdapter(teacherAdapter);
                                     }
+
+                                    teacherdetailsprogress.setVisibility(View.GONE);
                                 }
 
                                 @Override
