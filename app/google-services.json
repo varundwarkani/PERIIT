@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "435017267059",
+    "firebase_url": "https://periit-efa70.firebaseio.com",
+    "project_id": "periit-efa70",
+    "storage_bucket": "periit-efa70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435017267059:android:85c46a0b56283c1d",
+        "android_client_info": {
+          "package_name": "peri.periit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435017267059-99i4pt7nde2aad74n46fkbus15ou5k7c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "peri.periit",
+            "certificate_hash": "38b0f1407220a273398f036e83462d570d906d47"
+          }
+        },
+        {
+          "client_id": "435017267059-qkegkh3953hrb2tctanl9ope9clm1gdm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEcxH75s8Ljq--5GaPLivUwQrEhs65Z3I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435017267059-qkegkh3953hrb2tctanl9ope9clm1gdm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

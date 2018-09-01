@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity {
-
-    RelativeLayout rlstudent,rlteacher,rlperi;
-    Button btStudent,btTeacher;
+public class Signup extends AppCompatActivity {
 
     Button btsignup;
     TextView etsignuppass,etsignupmail;
@@ -41,31 +37,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        rlstudent = findViewById(R.id.rlstudent);
-        rlteacher = findViewById(R.id.rlteacher);
-        rlperi = findViewById(R.id.rlperi);
-        btStudent = findViewById(R.id.btStudent);
-        btTeacher = findViewById(R.id.btTeacher);
-
-        btStudent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rlperi.setVisibility(View.GONE);
-                rlteacher.setVisibility(View.GONE);
-                rlstudent.setVisibility(View.VISIBLE);
-            }
-        });
-
-        btTeacher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rlperi.setVisibility(View.GONE);
-                rlteacher.setVisibility(View.VISIBLE);
-                rlstudent.setVisibility(View.GONE);
-            }
-        });
+        setContentView(R.layout.activity_signup);
 
         etsignuppass = findViewById(R.id.etsignuppass);
         etsignupmail = findViewById(R.id.etsignupmail);
@@ -91,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     uid = user.getUid();
 
-                                    final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(Signup.this);
                                     View v = null;
-                                    v = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_registration,null,false);
+                                    v = LayoutInflater.from(Signup.this).inflate(R.layout.custom_registration,null,false);
                                     builder.setView(v);
                                     final EditText etCustomRegistrationNumber,etCustomRegistrationName,etCustomRegistrationrollno;
                                     final EditText etCustomRegistrationdept,etCustomRegistrationyear;
@@ -110,17 +82,17 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(View view) {
 
-
+                                            
                                             //name,dept,year,phoneno,rollno
                                             name = etCustomRegistrationName.getText().toString();
                                             dept = etCustomRegistrationdept.getText().toString();
                                             year = etCustomRegistrationyear.getText().toString();
                                             phone = etCustomRegistrationNumber.getText().toString();
                                             rollno = etCustomRegistrationrollno.getText().toString();
-
+                                            
                                             if (name.equals("") || phone.equals("") || dept.equals("") || year.equals("") || phone.equals(""))
                                             {
-                                                Toast.makeText(MainActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(Signup.this, "Enter all the details", Toast.LENGTH_SHORT).show();
                                             }
                                             else
                                             {
@@ -135,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                                 else
                                 {
                                     FirebaseAuthException e = (FirebaseAuthException)task.getException();
-                                    Toast.makeText(MainActivity.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Signup.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -143,12 +115,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        Toast.makeText(MainActivity.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Signup.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else
                 {
-                    Toast.makeText(MainActivity.this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Signup.this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -179,12 +151,12 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.child("student/"+uid+"/exams").setValue("6");
         databaseReference.child("student/"+uid+"/backlog").setValue("0");
 
-  //      mAuth.signOut();
-    //    Toast.makeText(this, "Details set! logged out!", Toast.LENGTH_SHORT).show();
-        //     Intent intent = new Intent (Signup.this, Login.class);
-        //   startActivity(intent);
-        // finish();
-
-
+        mAuth.signOut();
+        Toast.makeText(this, "Details set! logged out!", Toast.LENGTH_SHORT).show();
+   //     Intent intent = new Intent (Signup.this, Login.class);
+     //   startActivity(intent);
+       // finish();
+        
+        
     }
 }

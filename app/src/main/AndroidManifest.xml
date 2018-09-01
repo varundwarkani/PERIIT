@@ -16,7 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WebView"></activity>
+        <activity android:name=".WebView" />
+        <activity android:name=".Signup" />
+        <activity android:name=".StudentDisplay"></activity>
     </application>
 
 </manifest>
