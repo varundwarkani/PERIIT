@@ -115,9 +115,9 @@ public class StudentView extends AppCompatActivity {
                             rollno = dataSnapshot.child("student/"+studentuid+"/rollno").getValue().toString();
                             phoneno = dataSnapshot.child("student/"+studentuid+"/phoneno").getValue().toString();
 
-                            dept = dataSnapshot.child("student/"+studentuid+"/status").getValue().toString();
-                            year = dataSnapshot.child("student/"+studentuid+"/status").getValue().toString();
-                            section = dataSnapshot.child("student/"+studentuid+"/status").getValue().toString();
+                            dept = dataSnapshot.child("student/"+studentuid+"/dept").getValue().toString();
+                            year = dataSnapshot.child("student/"+studentuid+"/year").getValue().toString();
+                            section = dataSnapshot.child("student/"+studentuid+"/section").getValue().toString();
 
 
                             tvname.setText(name);

@@ -21,10 +21,11 @@
             android:layout_width="fill_parent">
         <TextView
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/tvteacherrollno"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
+            android:textAlignment="center"
+            android:paddingTop="15dp"
+            android:background="@drawable/textborder"
             android:text="Student's Roll no"
             android:layout_width="0dp"/>
 
@@ -33,8 +34,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvteachername"
             android:text="Student's Name"
-            android:paddingTop="10dp"
+            android:paddingTop="15dp"
             android:paddingLeft="10dp"
+            android:textAlignment="center"
             android:layout_width="0dp"/>
 
         </LinearLayout>

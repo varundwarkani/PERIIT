@@ -51,7 +51,6 @@ public class TeacherAdapter extends RecyclerView.Adapter<TeacherAdapter.ViewHold
         holder.cvteacher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(holder.itemView.getContext(),uid.get(position), Toast.LENGTH_SHORT).show();
                 SharedPreferences categoriesPref = holder.itemView.getContext().getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = categoriesPref.edit();
                 editor.putString("studentuid",uid.get(position));
@@ -61,8 +60,8 @@ public class TeacherAdapter extends RecyclerView.Adapter<TeacherAdapter.ViewHold
                 holder.itemView.getContext().startActivity(intent);
             }
         });
-        holder.tvteacherrollno.setText(rollno.get(position));
-        holder.tvteachername.setText(name.get(position));
+        holder.tvteacherrollno.setText("Roll No. " + rollno.get(position));
+        holder.tvteachername.setText("Name: "+name.get(position));
     }
 
     @Override

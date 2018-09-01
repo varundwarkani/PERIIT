@@ -13,12 +13,16 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/btStudent"
+            android:background="@drawable/buttonborder"
+            android:textColor="#FFF"
             android:text="STUDENT"
             android:layout_width="0dp"/>
 
         <Button
             android:layout_weight="1"
             android:id="@+id/btTeacher"
+            android:background="@drawable/buttonborder"
+            android:textColor="#FFF"
             android:text="TEACHER"
             android:layout_height="wrap_content"
             android:layout_width="0dp"/>
@@ -341,13 +345,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
+        android:background="@drawable/gradiant"
         android:id="@+id/rlperi">
 
-        <TextView
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="PERI IT COLLEGE"
-            android:textSize="30dp"/>
+            android:background="@drawable/pericampus"/>
     </RelativeLayout>
 
     <ProgressBar
