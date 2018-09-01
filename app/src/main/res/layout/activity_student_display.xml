@@ -50,6 +50,7 @@
                     android:layout_height="match_parent"
                     android:textSize="20dp"
                     android:padding="10dp"
+                    android:textAlignment="center"
                     android:text="New subjects"
                     android:id="@+id/tvsubjects"
                     android:textColor="#FFF"/>
@@ -74,6 +75,7 @@
                     android:layout_height="match_parent"
                     android:textSize="20dp"
                     android:padding="10dp"
+                    android:textAlignment="center"
                     android:text="Backlogs"
                     android:id="@+id/tvbacklogs"
                     android:textColor="#FFF"/>

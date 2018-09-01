@@ -31,10 +31,11 @@
 
         <TextView
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/tvteachername"
             android:text="Student's Name"
             android:paddingTop="15dp"
+            android:background="@drawable/textborder"
             android:paddingLeft="10dp"
             android:textAlignment="center"
             android:layout_width="0dp"/>
