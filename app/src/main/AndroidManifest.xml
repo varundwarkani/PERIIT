@@ -17,8 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".WebView" />
-        <activity android:name=".Signup" />
-        <activity android:name=".StudentDisplay"></activity>
+        <activity android:name=".StudentDisplay" />
+        <activity android:name=".TeacherDetails"></activity>
     </application>
 
 </manifest>

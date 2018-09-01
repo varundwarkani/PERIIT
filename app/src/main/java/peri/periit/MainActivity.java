@@ -34,11 +34,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
-    WebView webview;
-
     RelativeLayout rlstudent,rlteacher,rlperi;
-    Button btStudent,btTeacher,btlogin;
-    Button btsignup;
+    Button btStudent,btTeacher;
+    Button btsignup,btlogin;
     TextView etsignuppass,etsignupmail;
     String mail,pass,uid,type;
     FirebaseAuth mAuth;
@@ -46,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String CATPREF = "catpref";
     SharedPreferences categoriesPref;
     SharedPreferences.Editor editor;
+
+    String email,password;
+    TextView etsignuppasst,etsignupmailt;
+    Button btsignupt,btlogint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,53 @@ public class MainActivity extends AppCompatActivity {
         rlperi = findViewById(R.id.rlperi);
         btStudent = findViewById(R.id.btStudent);
         btTeacher = findViewById(R.id.btTeacher);
+
+        etsignuppasst = findViewById(R.id.etsignuppasst);
+        etsignupmailt = findViewById(R.id.etsignupmailt);
+        btsignupt = findViewById(R.id.btsignupt);
+        btlogint = findViewById(R.id.btlogint);
+
+        btlogint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard();
+                email = etsignupmailt.getText().toString();
+                password = etsignuppasst.getText().toString();
+
+                if (!TextUtils.isEmpty(email)&&!TextUtils.isEmpty(password))
+                {
+                    Task<AuthResult> authResultTask = mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful())
+                            {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                uid = user.getUid();
+                                categoriesPref = getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
+                                editor = categoriesPref.edit();
+                                editor.putString("uid",uid);
+                                editor.putString("type","teacher");
+                                editor.commit();
+
+                                Intent intent = new Intent (MainActivity.this, TeacherDetails.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                            else
+                            {
+                                FirebaseAuthException e = (FirebaseAuthException)task.getException();
+                                Toast.makeText(MainActivity.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         btStudent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
                                     categoriesPref = getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
                                     editor = categoriesPref.edit();
                                     editor.putString("uid",uid);
+                                    editor.putString("type","student");
                                     editor.commit();
 
                                     final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -210,6 +260,96 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
+
+
+        btsignupt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkAvailable())
+                {
+                    hideKeyboard();
+                    email = etsignupmailt.getText().toString();
+                    password = etsignuppasst.getText().toString();
+
+                    if (!TextUtils.isEmpty(email)&&!TextUtils.isEmpty(password))
+                    {
+                        Task<AuthResult> authResultTask = mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful())
+                                {
+
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    uid = user.getUid();
+
+                                    categoriesPref = getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
+                                    editor = categoriesPref.edit();
+                                    editor.putString("uid",uid);
+                                    editor.putString("type","teacher");
+                                    editor.commit();
+
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    View v = null;
+                                    v = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_registration_teacher,null,false);
+                                    builder.setView(v);
+                                    final EditText etCustomRegistrationNumber,etCustomRegistrationName,etCustomRegistrationrollno;
+                                    final EditText etCustomRegistrationdept;
+                                    Button btCustomRegistrationLogin;
+                                    etCustomRegistrationName = v.findViewById(R.id.etCustomRegistrationName);
+                                    etCustomRegistrationNumber = v.findViewById(R.id.etCustomRegistrationNumber);
+                                    etCustomRegistrationrollno = v.findViewById(R.id.etCustomRegistrationrollno);
+                                    etCustomRegistrationdept = v.findViewById(R.id.etCustomRegistrationdept);
+
+                                    btCustomRegistrationLogin = v.findViewById(R.id.btCustomRegistrationLogin);
+                                    builder.setCancelable(false);
+                                    btCustomRegistrationLogin.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+
+                                            //name,dept,year,phoneno,rollno
+                                            name = etCustomRegistrationName.getText().toString();
+                                            dept = etCustomRegistrationdept.getText().toString();
+                                            phone = etCustomRegistrationNumber.getText().toString();
+                                            rollno = etCustomRegistrationrollno.getText().toString();
+
+                                            if (name.equals("") || phone.equals("") || dept.equals("") || phone.equals(""))
+                                            {
+                                                Toast.makeText(MainActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else
+                                            {
+                                                setdetailss();
+                                            }
+                                        }
+                                    });
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                    //ask name, rollno, dept,year
+                                }
+                                else
+                                {
+                                    FirebaseAuthException e = (FirebaseAuthException)task.getException();
+                                    Toast.makeText(MainActivity.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+                    }
+                    else
+                    {
+                        Toast.makeText(MainActivity.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, "Please check your internet connection.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void hideKeyboard() {
@@ -237,6 +377,11 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.child("student/"+uid+"/exams").setValue("6");
         databaseReference.child("student/"+uid+"/backlog").setValue("0");
         databaseReference.child("student/"+uid+"/status").setValue("0");
+        databaseReference.child("student/"+uid+"/year").setValue(year);
+        databaseReference.child("student/"+uid+"/dept").setValue(dept);
+        databaseReference.child("student/"+uid+"/rollno").setValue(rollno);
+        databaseReference.child("student/"+uid+"/name").setValue(name);
+        databaseReference.child("student/"+uid+"/phoneno").setValue(phone);
 
   //      mAuth.signOut();
     //    Toast.makeText(this, "Details set! logged out!", Toast.LENGTH_SHORT).show();
@@ -248,6 +393,32 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
 
         Intent intent = new Intent (MainActivity.this, StudentDisplay.class);
+        startActivity(intent);
+        finish();
+    }
+
+
+    public void setdetailss()
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference();
+        databaseReference.child("teacher/"+uid+"/mail").setValue(mail);
+        databaseReference.child("teacher/"+uid+"/uid").setValue(uid);
+        databaseReference.child("teacher/"+uid+"/phoneno").setValue(phone);
+        databaseReference.child("teacher/"+uid+"/idno").setValue(rollno);
+        databaseReference.child("teacher/"+uid+"/name").setValue(name);
+        databaseReference.child("teacher/"+uid+"/dept").setValue(dept);
+
+        //      mAuth.signOut();
+        //    Toast.makeText(this, "Details set! logged out!", Toast.LENGTH_SHORT).show();
+
+        categoriesPref = getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
+        editor = categoriesPref.edit();
+        editor.putString("uid",uid);
+        editor.putString("type","teacher");
+        editor.commit();
+
+        Intent intent = new Intent (MainActivity.this, TeacherDetails.class);
         startActivity(intent);
         finish();
     }
