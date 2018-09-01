@@ -372,7 +372,7 @@ public class StudentDisplay extends AppCompatActivity {
 
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                                         final DatabaseReference databaseReference = database.getReference();
-                                        databaseReference.child("student/"+uid+"/image").setValue(download);
+                                        databaseReference.child("student/"+uid+"/image").setValue(downloadUrl);
                                         databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/image").setValue(download);
                                     }
                                 });
