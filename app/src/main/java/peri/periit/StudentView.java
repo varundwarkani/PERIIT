@@ -4,7 +4,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.Image;
+import android.os.Handler;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +39,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import static peri.periit.MainActivity.CATPREF;
 
@@ -55,16 +67,25 @@ public class StudentView extends AppCompatActivity {
     private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=";
     private static final String ATTACH_API = "&authkey=235086AuBUHp6g5b8a8abc&message=";
     ProgressBar studentviewprogress;
+    Button btshow;
+    AlertDialog imagedialog;
+
+    String image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_view);
 
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         studentviewprogress = findViewById(R.id.studentviewprogress);
         studentviewprogress.setVisibility(View.VISIBLE);
         btnotify = findViewById(R.id.btnotify);
 
+        btshow = findViewById(R.id.btshow);
         btchange = findViewById(R.id.btchange);
         btchange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +132,34 @@ public class StudentView extends AppCompatActivity {
                     mRefregggg.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            image = dataSnapshot.child("student/"+studentuid+"/image").getValue().toString();
+
+                            btshow.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(StudentView.this);
+                                    View v1 = null;
+                                    v1 = LayoutInflater.from(StudentView.this).inflate(R.layout.custom_image,null,false);
+                                    builder.setView(v1);
+                                    ImageView imageView;
+                                    Button btclose;
+                                    btclose = v1.findViewById(R.id.btclose);
+                                    btclose.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            imagedialog.cancel();
+                                        }
+                                    });
+                                    imageView = v1.findViewById(R.id.imageview);
+                                    imageView.setImageBitmap(getBitmapFromURL(image));
+                                    builder.setCancelable(false);
+                                    imagedialog = builder.create();
+                                    imagedialog.show();
+                                }
+                            });
+
                             subjects = dataSnapshot.child("student/"+studentuid+"/exams").getValue().toString();
                             name = dataSnapshot.child("student/"+studentuid+"/name").getValue().toString();
                             rollno = dataSnapshot.child("student/"+studentuid+"/rollno").getValue().toString();
@@ -353,5 +402,24 @@ public class StudentView extends AppCompatActivity {
     }
 
     private void parsedetails(JSONObject jsonObject) {
+    }
+
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            Log.e("src",src);
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            Log.e("Bitmap","returned");
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Exception",e.getMessage());
+            return null;
+        }
     }
 }

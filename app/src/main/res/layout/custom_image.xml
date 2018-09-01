@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#27304C"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:id="@+id/imageview"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:textAlignment="center"
+        android:id="@+id/btclose"
+        android:layout_height="wrap_content"
+        android:background="#CF4332"
+        android:textColor="#FFF"
+        android:text="CLOSE"/>
+
+</LinearLayout>

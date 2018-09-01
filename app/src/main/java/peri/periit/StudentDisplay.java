@@ -1,16 +1,34 @@
 package peri.periit;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +38,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,8 +47,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class StudentDisplay extends AppCompatActivity {
 
@@ -42,6 +75,14 @@ public class StudentDisplay extends AppCompatActivity {
     private RequestQueue requestQueue;
     ProgressBar studentdisplayprogress;
     Button btfeedback,btUpload;
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION_WRITE = 22;
+
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    private static final int GALLERY_INTENT = 2;
+    StorageReference mStorageRef;
+    String name;
 
     private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=";
     private static final String ATTACH_API = "&authkey=235086AuBUHp6g5b8a8abc&message=";
@@ -54,12 +95,17 @@ public class StudentDisplay extends AppCompatActivity {
         setContentView(R.layout.activity_student_display);
 
         btfeedback = findViewById(R.id.btfeedback);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         btUpload = findViewById(R.id.btUpload);
         btUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                if (checkPermissionREAD_EXTERNAL_STORAGE(StudentDisplay.this) && checkPermissionLOCATION(StudentDisplay.this) && checkPermissionWRITE(StudentDisplay.this) ) {
+                    startActivityForResult(intent, GALLERY_INTENT);
+                }
             }
         });
 
@@ -246,4 +292,217 @@ public class StudentDisplay extends AppCompatActivity {
 
     private void parsedetails(JSONObject jsonObject) {
     }
+
+    public boolean checkPermissionREAD_EXTERNAL_STORAGE(
+            final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        (Activity) context,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    showDialog("External Storage",context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                } else {
+                    ActivityCompat
+                            .requestPermissions(
+                                    (Activity) context,
+                                    new String[] { android.Manifest.permission.READ_EXTERNAL_STORAGE },
+                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    public void showDialog(final String msg, final Context context,
+                           final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage(msg + " permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) context,
+                                new String[] { permission },
+                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestcode, int resultcode, Intent data) {
+        super.onActivityResult(requestcode, resultcode, data);
+        if (requestcode == GALLERY_INTENT && resultcode == RESULT_OK) {
+            Uri uri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                ImageView imageview = findViewById(R.id.imageview);
+                imageview.setImageBitmap(bitmap);
+
+                FirebaseStorage storage;
+                StorageReference storageReference;
+
+                storage = FirebaseStorage.getInstance();
+                storageReference = storage.getReference();
+
+                final StorageReference ref = storageReference.child("images/"+ uid);
+                ref.putFile(uri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(StudentDisplay.this, "Uploaded", Toast.LENGTH_SHORT).show();
+
+                                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Uri downloadUrl = uri;
+                                        String download = String.valueOf(downloadUrl);
+
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        final DatabaseReference databaseReference = database.getReference();
+                                        databaseReference.child("student/"+uid+"/image").setValue(download);
+                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/image").setValue(download);
+                                    }
+                                });
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(StudentDisplay.this, "Failed: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                        .getTotalByteCount());
+                                Toast.makeText(StudentDisplay.this, "Uploaded "+String.valueOf((int)progress+"%"), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            Log.i("URI",uri.toString());
+
+
+        }
+    }
+
+    public boolean checkPermissionLOCATION(
+            final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        (Activity) context,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    showDialogg("External Storage",context, android.Manifest.permission.ACCESS_COARSE_LOCATION);
+
+                } else {
+                    ActivityCompat
+                            .requestPermissions(
+                                    (Activity) context,
+                                    new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },
+                                    MY_PERMISSIONS_REQUEST_LOCATION);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    public void showDialogg(final String msg, final Context context,
+                            final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage(msg + " permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) context,
+                                new String[] { permission },
+                                MY_PERMISSIONS_REQUEST_LOCATION);
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+
+
+
+
+
+
+    public boolean checkPermissionWRITE(
+            final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        (Activity) context,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    showDialoggg("External Storage",context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                } else {
+                    ActivityCompat
+                            .requestPermissions(
+                                    (Activity) context,
+                                    new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                                    MY_PERMISSIONS_REQUEST_LOCATION_WRITE);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    public void showDialoggg(final String msg, final Context context,
+                            final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage(msg + " permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) context,
+                                new String[] { permission },
+                                MY_PERMISSIONS_REQUEST_LOCATION_WRITE);
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
 }

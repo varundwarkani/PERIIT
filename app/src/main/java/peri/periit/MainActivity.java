@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         mainprogress = findViewById(R.id.mainprogress);
         mainprogress.setVisibility(View.GONE);
@@ -380,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
                                             else {
                                                 if (r<12)
                                                 {
-                                                    Toast.makeText(MainActivity.this, "Please enter 12 digit roll no.", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(MainActivity.this, "Please enter 12 digit ID no.", Toast.LENGTH_SHORT).show();
                                                 }
                                                 else
                                                 {
@@ -444,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference();
-        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/mail").setValue(email);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/mail").setValue(mail);
         databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/uid").setValue(uid);
         databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/exams").setValue("6");
         databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/backlog").setValue("0");
@@ -457,7 +461,10 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/section").setValue(section);
 
 
-        databaseReference.child("student/"+uid+"/mail").setValue(email);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/image").setValue("https://firebasestorage.googleapis.com/v0/b/periit-efa70.appspot.com/o/fees.jpg?alt=media&token=133e92ab-af84-4e54-b3e0-9882982697c6");
+        databaseReference.child("student/"+uid+"/image").setValue("https://firebasestorage.googleapis.com/v0/b/periit-efa70.appspot.com/o/fees.jpg?alt=media&token=133e92ab-af84-4e54-b3e0-9882982697c6");
+
+        databaseReference.child("student/"+uid+"/mail").setValue(mail);
         databaseReference.child("student/"+uid+"/uid").setValue(uid);
         databaseReference.child("student/"+uid+"/exams").setValue("6");
         databaseReference.child("student/"+uid+"/backlog").setValue("0");
@@ -491,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference();
-        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/mail").setValue(mail);
+        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/mail").setValue(email);
         databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/uid").setValue(uid);
         databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/phoneno").setValue(phone);
         databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/idno").setValue(rollno);
@@ -500,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/section").setValue(section);
         databaseReference.child("phoneno/"+dept+"/"+year+"/"+section+"/phoneno").setValue(phone);
 
-        databaseReference.child("teacher/"+uid+"/mail").setValue(mail);
+        databaseReference.child("teacher/"+uid+"/mail").setValue(email);
         databaseReference.child("teacher/"+uid+"/uid").setValue(uid);
         databaseReference.child("teacher/"+uid+"/phoneno").setValue(phone);
         databaseReference.child("teacher/"+uid+"/idno").setValue(rollno);
