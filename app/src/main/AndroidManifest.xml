@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".WebView" />
         <activity android:name=".StudentDisplay" />
-        <activity android:name=".TeacherDetails"></activity>
+        <activity android:name=".TeacherDetails" />
+        <activity android:name=".StudentView"></activity>
     </application>
 
 </manifest>

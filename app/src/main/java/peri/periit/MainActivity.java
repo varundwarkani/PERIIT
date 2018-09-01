@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference();
-        databaseReference.child("student/"+uid+"/mail").setValue(mail);
+        databaseReference.child("student/"+uid+"/mail").setValue(email);
         databaseReference.child("student/"+uid+"/uid").setValue(uid);
         databaseReference.child("student/"+uid+"/exams").setValue("6");
         databaseReference.child("student/"+uid+"/backlog").setValue("0");
