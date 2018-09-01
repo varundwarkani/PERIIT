@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +21,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.api.Response;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,6 +38,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String CATPREF = "catpref";
     SharedPreferences categoriesPref;
     SharedPreferences.Editor editor;
+    private RequestQueue requestQueue;
+
+    private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=8667702842&authkey=235086AuBUHp6g5b8a8abc&message=Youneed";
 
     String email,password;
     TextView etsignuppasst,etsignupmailt;
@@ -64,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         etsignupmailt = findViewById(R.id.etsignupmailt);
         btsignupt = findViewById(R.id.btsignupt);
         btlogint = findViewById(R.id.btlogint);
+
 
         btlogint.setOnClickListener(new View.OnClickListener() {
             @Override
