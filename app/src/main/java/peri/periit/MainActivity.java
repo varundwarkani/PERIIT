@@ -2,6 +2,8 @@ package peri.periit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
@@ -24,19 +26,26 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
-    RelativeLayout rlstudent,rlteacher,rlperi;
-    Button btStudent,btTeacher;
+    WebView webview;
 
+    RelativeLayout rlstudent,rlteacher,rlperi;
+    Button btStudent,btTeacher,btlogin;
     Button btsignup;
     TextView etsignuppass,etsignupmail;
-    String mail,pass,uid;
+    String mail,pass,uid,type;
     FirebaseAuth mAuth;
     String name,dept,year,rollno,phone;
+    public static final String CATPREF = "catpref";
+    SharedPreferences categoriesPref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +64,49 @@ public class MainActivity extends AppCompatActivity {
                 rlperi.setVisibility(View.GONE);
                 rlteacher.setVisibility(View.GONE);
                 rlstudent.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btlogin = findViewById(R.id.btlogin);
+        btlogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard();
+                mail = etsignupmail.getText().toString();
+                pass = etsignuppass.getText().toString();
+
+                if (!TextUtils.isEmpty(mail)&&!TextUtils.isEmpty(pass))
+                {
+                    Task<AuthResult> authResultTask = mAuth.signInWithEmailAndPassword(mail, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful())
+                            {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                uid = user.getUid();
+                                categoriesPref = getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
+                                editor = categoriesPref.edit();
+                                editor.putString("uid",uid);
+                                editor.putString("type","student");
+                                editor.commit();
+
+                                Intent intent = new Intent (MainActivity.this, StudentDisplay.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                            else
+                            {
+                                FirebaseAuthException e = (FirebaseAuthException)task.getException();
+                                Toast.makeText(MainActivity.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -88,8 +140,14 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful())
                                 {
+
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     uid = user.getUid();
+
+                                    categoriesPref = getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
+                                    editor = categoriesPref.edit();
+                                    editor.putString("uid",uid);
+                                    editor.commit();
 
                                     final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                                     View v = null;
@@ -178,13 +236,19 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.child("student/"+uid+"/uid").setValue(uid);
         databaseReference.child("student/"+uid+"/exams").setValue("6");
         databaseReference.child("student/"+uid+"/backlog").setValue("0");
+        databaseReference.child("student/"+uid+"/status").setValue("0");
 
   //      mAuth.signOut();
     //    Toast.makeText(this, "Details set! logged out!", Toast.LENGTH_SHORT).show();
-        //     Intent intent = new Intent (Signup.this, Login.class);
-        //   startActivity(intent);
-        // finish();
 
+        categoriesPref = getSharedPreferences(CATPREF, Context.MODE_PRIVATE);
+        editor = categoriesPref.edit();
+        editor.putString("uid",uid);
+        editor.putString("type","student");
+        editor.commit();
 
+        Intent intent = new Intent (MainActivity.this, StudentDisplay.class);
+        startActivity(intent);
+        finish();
     }
 }
