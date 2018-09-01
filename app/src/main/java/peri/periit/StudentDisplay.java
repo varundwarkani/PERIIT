@@ -41,6 +41,7 @@ public class StudentDisplay extends AppCompatActivity {
     String dept,year,section;
     private RequestQueue requestQueue;
     ProgressBar studentdisplayprogress;
+    Button btfeedback;
 
     private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=";
     private static final String ATTACH_API = "&authkey=235086AuBUHp6g5b8a8abc&message=";
@@ -51,6 +52,8 @@ public class StudentDisplay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_display);
+
+        btfeedback = findViewById(R.id.btfeedback);
 
         studentdisplayprogress = findViewById(R.id.studentdisplayprogress);
         studentdisplayprogress.setVisibility(View.VISIBLE);
@@ -120,6 +123,31 @@ public class StudentDisplay extends AppCompatActivity {
                                                     databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/status").setValue("2");
 
                                                     message = rollno+"%20has%20made%20payment.%20Please%20check%20and%20update.";
+                                                    requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                                    sendsms();
+                                                    //send sms here
+                                                }
+                                            })
+                                            .setNegativeButton("No", null)
+                                            .show();
+                                }
+                            });
+
+                            btfeedback.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    new AlertDialog.Builder(StudentDisplay.this)
+                                            .setMessage("Are you sure you want to ask your teacher to check details?")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    //set pay to 2
+                                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                                    final DatabaseReference databaseReference = database.getReference();
+                                                    databaseReference.child("student/"+uid+"/status").setValue("2");
+                                                    databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/status").setValue("2");
+
+                                                    message = rollno+"%20has%20requested%20to%20check%20their%20details.%20Kindly%20verify%20it.";
                                                     requestQueue = Volley.newRequestQueue(getApplicationContext());
                                                     sendsms();
                                                     //send sms here
