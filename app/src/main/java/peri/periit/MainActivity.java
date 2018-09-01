@@ -255,14 +255,29 @@ public class MainActivity extends AppCompatActivity {
                                             phone = etCustomRegistrationNumber.getText().toString();
                                             rollno = etCustomRegistrationrollno.getText().toString();
 
-                                            if (name.equals("") || phone.equals("") || dept.equals("") || year.equals("") || phone.equals(""))
+                                            int r = etCustomRegistrationrollno.getText().length();
+                                            int p = etCustomRegistrationNumber.getText().length();
+                                            if (p<10)
                                             {
-                                                mainprogress.setVisibility(View.GONE);
-                                                Toast.makeText(MainActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MainActivity.this, "Please enter 10 digit number", Toast.LENGTH_SHORT).show();
                                             }
                                             else
                                             {
-                                                setdetails();
+                                                if (r<12)
+                                                {
+                                                    Toast.makeText(MainActivity.this, "Please enter 12 digit roll no.", Toast.LENGTH_SHORT).show();
+                                                }
+                                                else {
+                                                    if (name.equals("") || phone.equals("") || dept.equals("") || year.equals("") || phone.equals(""))
+                                                    {
+                                                        mainprogress.setVisibility(View.GONE);
+                                                        Toast.makeText(MainActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else
+                                                    {
+                                                        setdetails();
+                                                    }
+                                                }
                                             }
                                         }
                                     });
@@ -356,14 +371,26 @@ public class MainActivity extends AppCompatActivity {
                                             phone = etCustomRegistrationNumber.getText().toString();
                                             rollno = etCustomRegistrationrollno.getText().toString();
 
-                                            if (name.equals("") || phone.equals("") || dept.equals("") || phone.equals(""))
+                                            int r = etCustomRegistrationrollno.getText().length();
+                                            int p = etCustomRegistrationNumber.getText().length();
+                                            if (p<10)
                                             {
-                                                mainprogress.setVisibility(View.GONE);
-                                                Toast.makeText(MainActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MainActivity.this, "Please enter 10 digit number", Toast.LENGTH_SHORT).show();
                                             }
-                                            else
-                                            {
-                                                setdetailss();
+                                            else {
+                                                if (r<12)
+                                                {
+                                                    Toast.makeText(MainActivity.this, "Please enter 12 digit roll no.", Toast.LENGTH_SHORT).show();
+                                                }
+                                                else
+                                                {
+                                                    if (name.equals("") || phone.equals("") || dept.equals("") || phone.equals("")) {
+                                                        mainprogress.setVisibility(View.GONE);
+                                                        Toast.makeText(MainActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        setdetailss();
+                                                    }
+                                                }
                                             }
                                         }
                                     });

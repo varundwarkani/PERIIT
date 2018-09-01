@@ -44,7 +44,8 @@ public class StudentView extends AppCompatActivity {
     Button btlogout,btnotify,btstatus;
     String backlogs,subjects,status,fees,name,rollno;
     Button btchange;
-    String exams,backlog;
+    String exams;
+    String backlog;
     String dept,year,section;
     AlertDialog.Builder builder;
     AlertDialog dialog;
@@ -263,30 +264,29 @@ public class StudentView extends AppCompatActivity {
 
                                             exams = etCustomexams.getText().toString();
                                             backlog = etCustombacklog.getText().toString();
+                                                if (exams.equals("") || backlog.equals("") )
+                                                {
+                                                    Toast.makeText(StudentView.this, "Enter both the details", Toast.LENGTH_SHORT).show();
+                                                }
+                                                else
+                                                {
+                                                    //set here
+                                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                                    final DatabaseReference databaseReference = database.getReference();
+                                                    databaseReference.child("student/"+studentuid+"/exams").setValue(exams);
+                                                    databaseReference.child("student/"+studentuid+"/backlog").setValue(backlog);
+                                                    databaseReference.child("student/"+studentuid+"/status").setValue("0");
 
-                                            if (exams.equals("") || backlog.equals("") )
-                                            {
-                                                Toast.makeText(StudentView.this, "Enter both the details", Toast.LENGTH_SHORT).show();
-                                            }
-                                            else
-                                            {
-                                                //set here
-                                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                                final DatabaseReference databaseReference = database.getReference();
-                                                databaseReference.child("student/"+studentuid+"/exams").setValue(exams);
-                                                databaseReference.child("student/"+studentuid+"/backlog").setValue(backlog);
-                                                databaseReference.child("student/"+studentuid+"/status").setValue("0");
+                                                    databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/backlog").setValue(backlog);
+                                                    databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/exams").setValue(exams);
+                                                    databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("0");
 
-                                                databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/backlog").setValue(backlog);
-                                                databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/exams").setValue(exams);
-                                                databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("0");
-
-                                                Toast.makeText(StudentView.this, "Successfully updated!", Toast.LENGTH_SHORT).show();
-                                                message = "Your%20fees%20amount%20has%20been%20changed%20.%20Please%20check%20and%20pay";
-                                                requestQueue = Volley.newRequestQueue(getApplicationContext());
-                                                sendsms();
-                                                dialog.cancel();
-                                            }
+                                                    Toast.makeText(StudentView.this, "Successfully updated!", Toast.LENGTH_SHORT).show();
+                                                    message = "Your%20fees%20amount%20has%20been%20changed%20.%20Please%20check%20and%20pay";
+                                                    requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                                    sendsms();
+                                                    dialog.cancel();
+                                                }
                                         }
                                     });
                                     dialog = builder.create();
