@@ -9,8 +9,18 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/rvteacher"
+        android:layout_marginBottom="50dp"
         android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btlogout"
+        android:background="#CF4332"
+        android:textColor="#FFF"
+        android:layout_alignParentBottom="true"
+        android:text="LOGOUT"/>
 
 </RelativeLayout>

@@ -20,10 +20,14 @@ public class TeacherAdapter extends RecyclerView.Adapter<TeacherAdapter.ViewHold
 
     ArrayList<String> rollno = new ArrayList<>();
     ArrayList<String> uid = new ArrayList<>();
+    ArrayList<String> status = new ArrayList<>();
+    ArrayList<String> name = new ArrayList<>();
 
-    public TeacherAdapter(ArrayList<String> rollno,ArrayList<String> uid){
+    public TeacherAdapter(ArrayList<String> rollno,ArrayList<String> uid, ArrayList<String> status, ArrayList<String> name){
         this.rollno = rollno;
         this.uid = uid;
+        this.status = status;
+        this.name = name;
     }
 
     @Override
@@ -35,6 +39,15 @@ public class TeacherAdapter extends RecyclerView.Adapter<TeacherAdapter.ViewHold
     @Override
     public void onBindViewHolder(final TeacherAdapter.ViewHolder holder, final int position) {
 
+
+        if (status.get(position).equals("0"))
+        {
+            holder.cvteacher.setCardBackgroundColor(Color.parseColor("#FF0000"));
+        }else if (status.get(position).equals("1")){
+            holder.cvteacher.setCardBackgroundColor(Color.parseColor("#32CD32"));
+        }else if (status.get(position).equals("2")) {
+            holder.cvteacher.setCardBackgroundColor(Color.parseColor("#FF8000"));
+        }
         holder.cvteacher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,6 +62,7 @@ public class TeacherAdapter extends RecyclerView.Adapter<TeacherAdapter.ViewHold
             }
         });
         holder.tvteacherrollno.setText(rollno.get(position));
+        holder.tvteachername.setText(name.get(position));
     }
 
     @Override
@@ -58,11 +72,12 @@ public class TeacherAdapter extends RecyclerView.Adapter<TeacherAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvteacherrollno;
+        public TextView tvteacherrollno,tvteachername;
         public CardView cvteacher;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            tvteachername = itemView.findViewById(R.id.tvteachername);
             tvteacherrollno = itemView.findViewById(R.id.tvteacherrollno);
             cvteacher = itemView.findViewById(R.id.cvteacher);
         }

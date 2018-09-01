@@ -45,6 +45,8 @@ public class StudentView extends AppCompatActivity {
     Button btchange;
     String exams,backlog;
 
+    String dept,year,section;
+
     AlertDialog.Builder builder;
     AlertDialog dialog;
 
@@ -115,6 +117,12 @@ public class StudentView extends AppCompatActivity {
                             name = dataSnapshot.child("student/"+studentuid+"/name").getValue().toString();
                             rollno = dataSnapshot.child("student/"+studentuid+"/rollno").getValue().toString();
                             phoneno = dataSnapshot.child("student/"+studentuid+"/phoneno").getValue().toString();
+
+                            dept = dataSnapshot.child("student/"+studentuid+"/status").getValue().toString();
+                            year = dataSnapshot.child("student/"+studentuid+"/status").getValue().toString();
+                            section = dataSnapshot.child("student/"+studentuid+"/status").getValue().toString();
+
+
                             tvname.setText(name);
                             tvrollno.setText(rollno);
                             backlogs = dataSnapshot.child("student/"+studentuid+"/backlog").getValue().toString();
@@ -128,7 +136,7 @@ public class StudentView extends AppCompatActivity {
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                                         final DatabaseReference databaseReference = database.getReference();
                                         databaseReference.child("student/"+studentuid+"/status").setValue("2");
-
+                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("2");
                                         message = "Your%20payment%20status%20has%20been%20changed%20to%20pending%20state";
                                         requestQueue = Volley.newRequestQueue(getApplicationContext());
                                         sendsms();
@@ -152,6 +160,7 @@ public class StudentView extends AppCompatActivity {
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                                         final DatabaseReference databaseReference = database.getReference();
                                         databaseReference.child("student/"+studentuid+"/status").setValue("0");
+                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("0");
 
                                         message = "Your%20payment%20status%20has%20been%20changed%20to%20rejected";
                                         requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -176,6 +185,7 @@ public class StudentView extends AppCompatActivity {
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                                         final DatabaseReference databaseReference = database.getReference();
                                         databaseReference.child("student/"+studentuid+"/status").setValue("1");
+                                        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("1");
                                         message = "Your%20payment%20status%20has%20been%20approved";
                                         requestQueue = Volley.newRequestQueue(getApplicationContext());
                                         sendsms();
@@ -239,7 +249,12 @@ public class StudentView extends AppCompatActivity {
                                                 final DatabaseReference databaseReference = database.getReference();
                                                 databaseReference.child("student/"+studentuid+"/exams").setValue(exams);
                                                 databaseReference.child("student/"+studentuid+"/backlog").setValue(backlog);
-                                                databaseReference.child("student/"+studentuid+"/status").setValue("2");
+                                                databaseReference.child("student/"+studentuid+"/status").setValue("0");
+
+                                                databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/backlog").setValue(backlog);
+                                                databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/exams").setValue(exams);
+                                                databaseReference.child(dept+"/"+year+"/"+section+"/student/"+studentuid+"/status").setValue("0");
+
                                                 Toast.makeText(StudentView.this, "Successfully updated!", Toast.LENGTH_SHORT).show();
                                                 message = "Your%20fees%20amount%20has%20been%20changed%20.%20Please%20check%20and%20pay";
                                                 requestQueue = Volley.newRequestQueue(getApplicationContext());

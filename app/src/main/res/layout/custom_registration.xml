@@ -59,25 +59,40 @@
         android:padding="15dp"
         />
 
-    <EditText
+    <Spinner
         android:id="@+id/etCustomRegistrationdept"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your Dept"
+        android:entries="@array/dept"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:inputType="text"
-        android:maxLength="4"
         android:background="#fff"
         android:padding="15dp"
         />
 
-    <EditText
+    <Spinner
         android:id="@+id/etCustomRegistrationyear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your Year"
+        android:entries="@array/year"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:inputType="number"
+        android:background="#fff"
+        android:padding="15dp"
+        />
+
+    <Spinner
+        android:id="@+id/etCustomRegistrationsection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your section"
+        android:entries="@array/section"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"

@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String EARNINGS_API = "http://api.msg91.com/api/sendhttp.php?country=91&sender=PERIIT&route=4&mobiles=8667702842&authkey=235086AuBUHp6g5b8a8abc&message=Youneed";
 
-    String email,password;
+    String email,password,section;
     TextView etsignuppasst,etsignupmailt;
     Button btsignupt,btlogint;
 
@@ -218,12 +219,14 @@ public class MainActivity extends AppCompatActivity {
                                     v = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_registration,null,false);
                                     builder.setView(v);
                                     final EditText etCustomRegistrationNumber,etCustomRegistrationName,etCustomRegistrationrollno;
-                                    final EditText etCustomRegistrationdept,etCustomRegistrationyear;
                                     Button btCustomRegistrationLogin;
                                     etCustomRegistrationName = v.findViewById(R.id.etCustomRegistrationName);
                                     etCustomRegistrationNumber = v.findViewById(R.id.etCustomRegistrationNumber);
                                     etCustomRegistrationrollno = v.findViewById(R.id.etCustomRegistrationrollno);
+
+                                    final Spinner etCustomRegistrationdept,etCustomRegistrationsection,etCustomRegistrationyear;
                                     etCustomRegistrationdept = v.findViewById(R.id.etCustomRegistrationdept);
+                                    etCustomRegistrationsection = v.findViewById(R.id.etCustomRegistrationsection);
                                     etCustomRegistrationyear = v.findViewById(R.id.etCustomRegistrationyear);
 
                                     btCustomRegistrationLogin = v.findViewById(R.id.btCustomRegistrationLogin);
@@ -235,8 +238,9 @@ public class MainActivity extends AppCompatActivity {
 
                                             //name,dept,year,phoneno,rollno
                                             name = etCustomRegistrationName.getText().toString();
-                                            dept = etCustomRegistrationdept.getText().toString();
-                                            year = etCustomRegistrationyear.getText().toString();
+                                            dept = etCustomRegistrationdept.getSelectedItem().toString();
+                                            year = etCustomRegistrationyear.getSelectedItem().toString();
+                                            section = etCustomRegistrationsection.getSelectedItem().toString();
                                             phone = etCustomRegistrationNumber.getText().toString();
                                             rollno = etCustomRegistrationrollno.getText().toString();
 
@@ -310,12 +314,16 @@ public class MainActivity extends AppCompatActivity {
                                     v = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_registration_teacher,null,false);
                                     builder.setView(v);
                                     final EditText etCustomRegistrationNumber,etCustomRegistrationName,etCustomRegistrationrollno;
-                                    final EditText etCustomRegistrationdept;
+
+                                    final Spinner etCustomRegistrationdept,etCustomRegistrationsection,etCustomRegistrationyear;
+                                    etCustomRegistrationdept = v.findViewById(R.id.etCustomRegistrationdept);
+                                    etCustomRegistrationsection = v.findViewById(R.id.etCustomRegistrationsection);
+                                    etCustomRegistrationyear = v.findViewById(R.id.etCustomRegistrationyear);
+
                                     Button btCustomRegistrationLogin;
                                     etCustomRegistrationName = v.findViewById(R.id.etCustomRegistrationName);
                                     etCustomRegistrationNumber = v.findViewById(R.id.etCustomRegistrationNumber);
                                     etCustomRegistrationrollno = v.findViewById(R.id.etCustomRegistrationrollno);
-                                    etCustomRegistrationdept = v.findViewById(R.id.etCustomRegistrationdept);
 
                                     btCustomRegistrationLogin = v.findViewById(R.id.btCustomRegistrationLogin);
                                     builder.setCancelable(false);
@@ -325,8 +333,10 @@ public class MainActivity extends AppCompatActivity {
 
 
                                             //name,dept,year,phoneno,rollno
+                                            dept = etCustomRegistrationdept.getSelectedItem().toString();
+                                            year = etCustomRegistrationyear.getSelectedItem().toString();
+                                            section = etCustomRegistrationsection.getSelectedItem().toString();
                                             name = etCustomRegistrationName.getText().toString();
-                                            dept = etCustomRegistrationdept.getText().toString();
                                             phone = etCustomRegistrationNumber.getText().toString();
                                             rollno = etCustomRegistrationrollno.getText().toString();
 
@@ -384,8 +394,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void setdetails()
     {
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference();
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/mail").setValue(email);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/uid").setValue(uid);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/exams").setValue("6");
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/backlog").setValue("0");
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/status").setValue("0");
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/year").setValue(year);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/dept").setValue(dept);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/rollno").setValue(rollno);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/name").setValue(name);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/phoneno").setValue(phone);
+        databaseReference.child(dept+"/"+year+"/"+section+"/student/"+uid+"/section").setValue(section);
+
+
         databaseReference.child("student/"+uid+"/mail").setValue(email);
         databaseReference.child("student/"+uid+"/uid").setValue(uid);
         databaseReference.child("student/"+uid+"/exams").setValue("6");
@@ -396,6 +420,8 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.child("student/"+uid+"/rollno").setValue(rollno);
         databaseReference.child("student/"+uid+"/name").setValue(name);
         databaseReference.child("student/"+uid+"/phoneno").setValue(phone);
+        databaseReference.child("student/"+uid+"/year").setValue(year);
+        databaseReference.child("student/"+uid+"/section").setValue(section);
 
   //      mAuth.signOut();
     //    Toast.makeText(this, "Details set! logged out!", Toast.LENGTH_SHORT).show();
@@ -414,14 +440,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void setdetailss()
     {
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference();
+        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/mail").setValue(mail);
+        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/uid").setValue(uid);
+        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/phoneno").setValue(phone);
+        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/idno").setValue(rollno);
+        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/name").setValue(name);
+        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/dept").setValue(dept);
+        databaseReference.child(dept+"/"+year+"/"+section+"/teacher/"+uid+"/section").setValue(section);
+        databaseReference.child("phoneno/"+dept+"/"+year+"/"+section+"/phoneno").setValue(phone);
+
         databaseReference.child("teacher/"+uid+"/mail").setValue(mail);
         databaseReference.child("teacher/"+uid+"/uid").setValue(uid);
         databaseReference.child("teacher/"+uid+"/phoneno").setValue(phone);
         databaseReference.child("teacher/"+uid+"/idno").setValue(rollno);
         databaseReference.child("teacher/"+uid+"/name").setValue(name);
         databaseReference.child("teacher/"+uid+"/dept").setValue(dept);
+        databaseReference.child("teacher/"+uid+"/year").setValue(year);
+        databaseReference.child("teacher/"+uid+"/section").setValue(section);
 
         //      mAuth.signOut();
         //    Toast.makeText(this, "Details set! logged out!", Toast.LENGTH_SHORT).show();
